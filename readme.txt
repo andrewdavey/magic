@@ -1,4 +1,4 @@
-Magic - Magic Automatically Generates Interesting Code.
+Magic - Magic Automatically Generates Inicidental Code.
 
 --- Set Up ---
 
