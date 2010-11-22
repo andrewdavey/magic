@@ -49,3 +49,17 @@ namespace Tests
         }
     }
 }
+
+namespace NamespaceTests
+{
+    using AnotherNamespace;
+
+    partial class RefAnotherNamespace : IDependOn<IBaz>
+    {
+    }
+}
+
+namespace AnotherNamespace
+{
+    interface IBaz { }
+}

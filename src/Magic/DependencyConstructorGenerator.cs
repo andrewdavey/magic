@@ -35,13 +35,15 @@ namespace Magic
                 let originalNamespace = relation.DependentType.Parent as NamespaceDeclaration
                 where originalNamespace != null
                 // TODO: Add support for classes not in a namespace
-                select new NamespaceDeclaration(originalNamespace.Name)
-                {
-                    Children = new List<INode>
-                    {
-                        CreatePartialClass(relation)
-                    }
-                };
+                select CreateNamespace(relation, originalNamespace);
+        }
+
+        NamespaceDeclaration CreateNamespace(DependencyRelation relation, NamespaceDeclaration originalNamespace)
+        {
+            var ns = new NamespaceDeclaration(originalNamespace.Name);
+            ns.Children.AddRange(originalNamespace.Children.OfType<UsingDeclaration>());
+            ns.Children.Add(CreatePartialClass(relation));
+            return ns;
         }
 
         INode CreatePartialClass(DependencyRelation relation)
