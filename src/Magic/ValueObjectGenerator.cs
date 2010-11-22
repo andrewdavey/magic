@@ -235,6 +235,27 @@ namespace Magic
                 {
                     Children = new List<INode>
                     {
+                        new IfElseStatement(
+                            new InvocationExpression(
+                                new MemberReferenceExpression(new TypeReferenceExpression(new TypeReference("global::System.Object")), "ReferenceEquals"),
+                                new List<Expression> {new IdentifierExpression("x"), new IdentifierExpression("y")}
+                            ),
+                            new ReturnStatement(new PrimitiveExpression(true))
+                        ),
+                        new IfElseStatement(
+                            new InvocationExpression(
+                                new MemberReferenceExpression(new TypeReferenceExpression(new TypeReference("global::System.Object")), "ReferenceEquals"),
+                                new List<Expression> {new IdentifierExpression("x"), new PrimitiveExpression(null)}
+                            ),
+                            new ReturnStatement(new PrimitiveExpression(false))
+                        ),
+                        new IfElseStatement(
+                            new InvocationExpression(
+                                new MemberReferenceExpression(new TypeReferenceExpression(new TypeReference("global::System.Object")), "ReferenceEquals"),
+                                new List<Expression> {new IdentifierExpression("y"), new PrimitiveExpression(null)}
+                            ),
+                            new ReturnStatement(new PrimitiveExpression(false))
+                        ),
                         new ReturnStatement(
                             new InvocationExpression(
                                 new MemberReferenceExpression(
