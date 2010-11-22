@@ -82,7 +82,7 @@ namespace Magic
             {
                 foreach (var c in relation.ExistingConstructors)
                 {
-                    yield return CreateConstructorCallingExisting(relation, c);
+                    yield return CreateConstructorFromExistingConstructor(relation, c);
                 }
             }
             else
@@ -91,7 +91,7 @@ namespace Magic
             }
         }
 
-        ConstructorDeclaration CreateConstructorCallingExisting(DependencyRelation relation, ConstructorDeclaration c)
+        ConstructorDeclaration CreateConstructorFromExistingConstructor(DependencyRelation relation, ConstructorDeclaration c)
         {
             return new ConstructorDeclaration(
                 relation.DependentType.Name,
@@ -100,15 +100,9 @@ namespace Magic
                 new List<AttributeSection>()
             )
             {
-                ConstructorInitializer = new ConstructorInitializer
-                {
-                    Arguments = c.Parameters
-                        .Select(p => (Expression)new IdentifierExpression(p.ParameterName))
-                        .ToList()
-                },
                 Body = new BlockStatement
                 {
-                    Children = CreateAssignments(relation).ToList()
+                    Children = CreateAssignments(relation).Concat(c.Body.Children).ToList()
                 }
             };
         }

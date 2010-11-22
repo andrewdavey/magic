@@ -1,1 +1,2 @@
-﻿
+﻿A project using Magic must have an item with build action set to None.
+This is to work around a bug in Genuilder.
