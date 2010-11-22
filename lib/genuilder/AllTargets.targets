@@ -1,0 +1,10 @@
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Import Project="AppConfigVerifier.targets" />
+<Import Project="AppSettingsGenerator.targets" />
+<Import Project="EnvironmentFile.targets" />
+<Import Project="Genuilder.Extensibility.targets" />
+<Import Project="InterfaceExtractor.targets" />
+<Import Project="PropertiesExtractor.targets" />
+<Import Project="StrongConfigGenerator.targets" />
+<PropertyGroup><UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable></PropertyGroup>
+</Project>

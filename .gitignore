@@ -1,0 +1,10 @@
+bin
+Bin
+obj
+Obj
+*.user
+*.suo
+_ReSharper.*
+*.csproj.user
+*.resharper.user
+*.ReSharper.user

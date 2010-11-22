@@ -1,0 +1,28 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+	<UsingTask AssemblyFile="AppSettingsGenerator.Targets.dll" TaskName="AppSettingsGenerator.Targets.AppSettingsGeneratorTask"/>
+	<ItemGroup>
+		<AppSettingsGenerator_GeneratedFile Include="$(IntermediateOutputPath)AppSettingsConnectionStrings.g.cs"></AppSettingsGenerator_GeneratedFile>
+	</ItemGroup>
+	<Target Name="AppSettingsGenerator_GetConfigFile">
+		<ItemGroup>
+			<_ConfigFile Include="@(AppConfigWithTargetPath)" Condition="Exists('@(AppConfigWithTargetPath)') And '@(_ConfigFile)' == ''" />
+			<_ConfigFile Include="Web.config" Condition="Exists('Web.config') And '@(_ConfigFile)' == ''" />
+		</ItemGroup>
+	</Target>
+	<Target Name="AppSettingsGenerator_GenerateSettings" Inputs="@(_ConfigFile)" Outputs="@(AppSettingsGenerator_GeneratedFile)">
+		<AppSettingsGenerator.Targets.AppSettingsGeneratorTask ConfigFile="@(_ConfigFile)" Language="$(Language)" ClassName="Settings" Namespace="$(RootNamespace)" GeneratedFile="@(AppSettingsGenerator_GeneratedFile)" />
+		<ItemGroup>
+			<Reference Include="System.Configuration"></Reference>
+			<Reference Include="System"></Reference>
+			<Compile Include="@(AppSettingsGenerator_GeneratedFile)"></Compile>
+			<FileWrites Include="@(AppSettingsGenerator_GeneratedFile)"/>
+		</ItemGroup>
+	</Target>
+	<PropertyGroup>
+		<ResolveReferencesDependsOn>
+			AppSettingsGenerator_GetConfigFile;
+			AppSettingsGenerator_GenerateSettings;
+			$(ResolveReferencesDependsOn)
+		</ResolveReferencesDependsOn>
+	</PropertyGroup>
+</Project>

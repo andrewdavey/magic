@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<UsingTask TaskName="AppConfigVerifier.MSBuild.Verifier" AssemblyFile="AppConfigVerfier.MSBuild.dll" />
+	<PropertyGroup>
+		<BuildDependsOn>
+			$(BuildDependsOn);
+			AppConfigVerifier_GetConfigFile;
+			VerifyAppConfig
+		</BuildDependsOn>
+	</PropertyGroup>
+
+	<Target Name="AppConfigVerifier_GetConfigFile">
+		<ItemGroup>
+			<_ConfigFile Include="@(AppConfigWithTargetPath)" Condition="Exists('@(AppConfigWithTargetPath)') And '@(_ConfigFile)' == ''" />
+			<_ConfigFile Include="Web.config" Condition="Exists('Web.config') And '@(_ConfigFile)' == ''" />
+		</ItemGroup>
+	</Target>
+
+	
+	<Target Name="VerifyAppConfig" Inputs="@(_ConfigFile)" Outputs="$(IntermediateOutputPath)Verifier_LastCheck.txt" Condition="Exists('@(_ConfigFile)')">
+		<ItemGroup>
+			<DefaultReferencePath Include=" @(MainAssembly->'%(FullPath)')"></DefaultReferencePath>
+		</ItemGroup>
+		<AppConfigVerifier.MSBuild.Verifier References="@(ReferencePath)" DefaultReferences="@(DefaultReferencePath)" Config="@(_ConfigFile)">
+		</AppConfigVerifier.MSBuild.Verifier>
+
+		<WriteLinesToFile File="$(IntermediateOutputPath)Verifier_LastCheck.txt" Lines="LastModified" Overwrite="true">
+		</WriteLinesToFile>
+		
+		<ItemGroup>
+			<FileWrites Include="$(IntermediateOutputPath)Verifier_LastCheck.txt"/>
+		</ItemGroup>
+	</Target>
+</Project>

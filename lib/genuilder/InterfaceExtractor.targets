@@ -1,0 +1,17 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+	<UsingTask AssemblyFile="InterfaceExtractor.Targets.dll" TaskName="InterfaceExtractor.Targets.InterfaceExtractorTask"/>
+	<PropertyGroup>
+		<ResolveReferencesDependsOn>
+			ExtractInterfaceGen;
+			$(ResolveReferencesDependsOn)
+		</ResolveReferencesDependsOn>
+	</PropertyGroup>
+	
+	<Target Name="ExtractInterfaceGen">
+		<!--<Warning Text="@(AppConfigFinal)"></Warning>-->
+		<InterfaceExtractor.Targets.InterfaceExtractorTask Inputs="@(Compile)" OutputDir="$(IntermediateOutputPath)">
+			<Output TaskParameter="Outputs"
+    ItemName="Compile" ></Output>
+		</InterfaceExtractor.Targets.InterfaceExtractorTask>
+	</Target>
+</Project>

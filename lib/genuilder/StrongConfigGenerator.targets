@@ -1,0 +1,28 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+	<UsingTask AssemblyFile="StrongConfigGenerator.Targets.dll" TaskName="StrongConfigGenerator.Targets.StrongConfigGeneratorTask"/>
+	<ItemGroup>
+		<StrongConfigGenerator_GeneratedFile Include="$(IntermediateOutputPath)Configurations.g.cs"></StrongConfigGenerator_GeneratedFile>
+	</ItemGroup>
+	<Target Name="GetConfigFile">
+		<ItemGroup>
+			<_ConfigFile Include="@(AppConfigWithTargetPath)" Condition="Exists('@(AppConfigWithTargetPath)') And '@(_ConfigFile)' == ''" />
+			<_ConfigFile Include="Web.config" Condition="Exists('Web.config') And '@(_ConfigFile)' == ''" />
+		</ItemGroup>
+	</Target>
+	<Target Name="StrongConfigGenerator_GenerateSettings" Inputs="@(_ConfigFile)" Outputs="@(StrongConfigGenerator_GeneratedFile)">
+		<StrongConfigGenerator.Targets.StrongConfigGeneratorTask ConfigFile="@(_ConfigFile)" Language="$(Language)" ClassName="Sections" Namespace="$(RootNamespace)" GeneratedFile="@(StrongConfigGenerator_GeneratedFile)" />
+		<ItemGroup>
+			<Reference Include="System.Configuration"></Reference>
+			<Reference Include="System"></Reference>
+			<Compile Include="@(StrongConfigGenerator_GeneratedFile)"></Compile>
+			<FileWrites Include="@(StrongConfigGenerator_GeneratedFile)"/>
+		</ItemGroup>
+	</Target>
+	<PropertyGroup>
+		<ResolveReferencesDependsOn>
+			GetConfigFile;
+			StrongConfigGenerator_GenerateSettings;
+			$(ResolveReferencesDependsOn)
+		</ResolveReferencesDependsOn>
+	</PropertyGroup>
+</Project>

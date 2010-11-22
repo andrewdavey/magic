@@ -1,0 +1,30 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+	<UsingTask AssemblyFile="EnvironmentFile.Targets.dll" TaskName="EnvironmentFile.Targets.ReplaceTokensTask"/>
+	<PropertyGroup>
+		<BuildDependsOn>
+			$(BuildDependsOn);
+			DetokenizeConfigFile
+		</BuildDependsOn>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'@(EnvironmentFile)' == ''">
+		<EnvironmentFile Include="EnvironmentFile.env">
+			<Default>true</Default>
+		</EnvironmentFile>
+	</ItemGroup>	
+	<PropertyGroup>
+		<TokenPattern Condition="'$(TokenPattern)' == ''">\$\(([^\)]+)\)</TokenPattern>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<AvailableItemName Include="EnvironmentFile"></AvailableItemName>
+	</ItemGroup>
+	
+	<Target Name="DetokenizeConfigFile" Condition="('@(EnvironmentFile->'%(Default)')' != 'true' or Exists('@(EnvironmentFile)')) and Exists('@(AppConfigWithTargetPath->'$(OutDir)%(TargetPath)')')">
+		<ItemGroup>
+			<AppConfigFinal Include="@(AppConfigWithTargetPath->'$(OutDir)%(TargetPath)')"></AppConfigFinal>
+		</ItemGroup>
+		<!--<Warning Text="@(AppConfigFinal)"></Warning>-->
+		<EnvironmentFile.Targets.ReplaceTokensTask EnvironmentFile="@(EnvironmentFile)" ConfigFile="@(AppConfigFinal)" TokenPattern="$(TokenPattern)"></EnvironmentFile.Targets.ReplaceTokensTask>
+	</Target>
+</Project>

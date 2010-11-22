@@ -1,0 +1,16 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+	<UsingTask AssemblyFile="PropertiesExtractor.Targets.dll" TaskName="PropertiesExtractor.Targets.PropertiesExtractorTask"/>
+	<PropertyGroup>
+		<ResolveReferencesDependsOn>
+			MetadataGen;
+			$(ResolveReferencesDependsOn)
+		</ResolveReferencesDependsOn>
+	</PropertyGroup>
+	
+	<Target Name="MetadataGen">
+		<PropertiesExtractor.Targets.PropertiesExtractorTask Inputs="@(Compile)" OutputDir="$(IntermediateOutputPath)">
+			<Output TaskParameter="Outputs"
+    ItemName="Compile" ></Output>
+		</PropertiesExtractor.Targets.PropertiesExtractorTask>
+	</Target>
+</Project>

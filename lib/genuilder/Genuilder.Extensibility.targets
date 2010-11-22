@@ -1,0 +1,50 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+	<UsingTask TaskName="Genuilder.Extensibility.Targets.ExtensibilityTask" AssemblyFile="Genuilder.Extensibility.Targets.dll"/>
+	<UsingTask TaskName="Genuilder.Extensibility.Targets.ExtensibilityCleanTask" AssemblyFile="Genuilder.Extensibility.Targets.dll"/>
+
+	<PropertyGroup>
+		<CompileDependsOn>
+			GenuilderExtensibility;
+			$(CompileDependsOn)
+		</CompileDependsOn>
+	</PropertyGroup>
+	<PropertyGroup>
+		<CleanDependsOn>
+			GenuilderExtensibilityClean;
+			$(CleanDependsOn)
+		</CleanDependsOn>
+	</PropertyGroup>
+	<PropertyGroup>
+		<GenuilderExtensibilityData Condition="'$(GenuilderExtensibilityData)' == ''" >Genuilder.Extensibility.xml</GenuilderExtensibilityData>
+	</PropertyGroup>
+
+	<Target Name="GenuilderExtensibility">
+
+		
+		
+		<!--<Error Text="@(_ResolvedProjectReferencePaths)"></Error>-->
+
+		<Genuilder.Extensibility.Targets.ExtensibilityTask
+			Sources="@(Compile)"
+			OtherFiles="@(None)"
+			References="@(_ResolvedProjectReferencePaths)"
+			OutputPath="$(IntermediateOutputPath)"
+			Data="$(IntermediateOutputPath)$(GenuilderExtensibilityData)" >
+			<Output TaskParameter="OutputSources"
+			ItemName="CompileOutput"></Output>
+		</Genuilder.Extensibility.Targets.ExtensibilityTask>
+		<ItemGroup>
+			<Compile Remove="**/*"></Compile>
+			<Compile Include="@(CompileOutput)"></Compile>
+		</ItemGroup>
+		<!--<Error Text="@(Compile)">
+
+		</Error>-->
+	</Target>
+
+	<Target Name="GenuilderExtensibilityClean">
+		<Genuilder.Extensibility.Targets.ExtensibilityCleanTask
+			OutputPath="$(IntermediateOutputPath)"
+			Data="$(GenuilderExtensibilityData)" />
+	</Target>
+</Project>
