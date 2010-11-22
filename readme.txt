@@ -1,4 +1,4 @@
-Magic - Mostly Automatic Generation of Interesting Code.
+Magic - Magic Automatically Generates Interesting Code.
 
 --- Set Up ---
 
