@@ -1,4 +1,4 @@
-Magic - Magic Automatically Generates Inicidental Code.
+Magic - Magic Automatically Generates Incidental Code.
 
 --- Set Up ---
 
@@ -19,6 +19,35 @@ Modify your project's .csproj file by adding the following Import after
 
 You may need to adjust the Project path to correctly point to 
 alltargets.targets. This import allows Genuilder to hook into MSBuild.
+
+
+--- Value Object Generator ---
+
+Do you want to create an immutable Value Object (in the DDD sense of the term)?
+Are you annoyed by all the C# code you have to write to do this properly?
+You need a constructor to take all the values that make up the value. You need
+the properties. You should overload Equals (and then also GetHashCode) to 
+implement value-based comparison (instead of .NET's default object reference 
+comparison). Finally providing operator overloads for == and != is a good idea
+too... ugh a silly amount of code right?!
+
+By using Magic you can simply write:
+
+partial class Money : IValueObject {
+    string currency;
+    decimal amount;
+}
+
+Magic will generate the rest of the class for you; constructor, Equals, 
+GetHashCode, == and !=. All you have to do is make the class partial and add 
+the IValueObject marker interface.
+
+Then you can continue using the class:
+
+var m = new Money("GBP", 100m); // Use the constructor
+Console.WriteLine(m.Currency); // Access the generated readonly property.
+var ok = (m == new Money("GBP", 100m)); // Use the equality operator.
+//etc
 
 
 --- Dependency Constructor Generator ---

@@ -7,11 +7,6 @@ namespace Tests
     {
         string currency;
         decimal amount;
-
-        public override string ToString()
-        {
-            return amount + " " + currency;
-        }
     }
 
     public class MoneyTest
