@@ -56,7 +56,11 @@
     <Compile Include="DependencyFinder.cs" />
     <Compile Include="DependencyRelation.cs" />
     <Compile Include="IDependOn.cs" />
+    <Compile Include="IValueObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ValueObjectFinder.cs" />
+    <Compile Include="ValueObjectGenerator.cs" />
+    <Compile Include="ValueObjectDescriptor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
