@@ -52,10 +52,10 @@ namespace Magic
             );
             partialClass.Name = relation.DependentType.Name;
             var fields = CreateFields(relation);
-            var constructor = CreateConstructor(relation);
+            var constructors = CreateConstructors(relation);
 
             partialClass.Children.AddRange(fields);
-            partialClass.Children.Add(constructor);
+            partialClass.Children.AddRange(constructors);
 
             return partialClass;
         }
@@ -76,15 +76,53 @@ namespace Magic
                    };
         }
 
-        ConstructorDeclaration CreateConstructor(DependencyRelation relation)
+        IEnumerable<ConstructorDeclaration> CreateConstructors(DependencyRelation relation)
+        {
+            if (relation.ExistingConstructors.Count > 0)
+            {
+                foreach (var c in relation.ExistingConstructors)
+                {
+                    yield return CreateConstructorCallingExisting(relation, c);
+                }
+            }
+            else
+            {
+                yield return CreateSimpleConstructor(relation);
+            }
+        }
+
+        ConstructorDeclaration CreateConstructorCallingExisting(DependencyRelation relation, ConstructorDeclaration c)
         {
             return new ConstructorDeclaration(
-                relation.DependentType.Name, 
-                Modifiers.Public, 
-                CreateParameters(relation).ToList(), 
-                new List<AttributeSection>())
+                relation.DependentType.Name,
+                Modifiers.Public,
+                c.Parameters.Concat(CreateParameters(relation)).ToList(),
+                new List<AttributeSection>()
+            )
             {
-                Body = new BlockStatement 
+                ConstructorInitializer = new ConstructorInitializer
+                {
+                    Arguments = c.Parameters
+                        .Select(p => (Expression)new IdentifierExpression(p.ParameterName))
+                        .ToList()
+                },
+                Body = new BlockStatement
+                {
+                    Children = CreateAssignments(relation).ToList()
+                }
+            };
+        }
+
+        ConstructorDeclaration CreateSimpleConstructor(DependencyRelation relation)
+        {
+            return new ConstructorDeclaration(
+                relation.DependentType.Name,
+                Modifiers.Public,
+                CreateParameters(relation).ToList(),
+                new List<AttributeSection>()
+            )
+            {
+                Body = new BlockStatement
                 {
                     Children = CreateAssignments(relation).ToList()
                 }

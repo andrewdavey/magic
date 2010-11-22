@@ -26,4 +26,26 @@ namespace Tests
             customerRepository.SaveCustomer(1, customer);
         }
     }
+
+    partial class MoreComplexExample : IDependOn<IEmailService>
+    {
+        // Magic will generate new public constructors that call these
+        // private constructors, but adding the extra dependency parameters.
+        private MoreComplexExample(int value)
+        {
+            this.value = value;
+        }
+
+        private MoreComplexExample(string foo, string bar)
+        {
+        }
+
+        int value;
+
+        static void Test()
+        {
+            new MoreComplexExample(1, default(IEmailService));
+            new MoreComplexExample("foo", "bar", default(IEmailService));
+        }
+    }
 }

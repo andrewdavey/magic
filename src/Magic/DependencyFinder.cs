@@ -14,18 +14,31 @@ namespace Magic
 
         public List<DependencyRelation> DependencyRelations { get; private set; }
 
+        DependencyRelation currentDependencyRelation;
+
         public override object VisitTypeDeclaration(TypeDeclaration typeDeclaration, object data)
         {
+            var previous = currentDependencyRelation;
+
             if (typeDeclaration.Type == ClassType.Class)
             {
                 var dependsOn = FindDependencyDeclaration(typeDeclaration);
                 if (dependsOn != null)
                 {
-                    DependencyRelations.Add(new DependencyRelation(typeDeclaration, dependsOn.GenericTypes));
+                    currentDependencyRelation = new DependencyRelation(typeDeclaration, dependsOn.GenericTypes);
+                    DependencyRelations.Add(currentDependencyRelation);
                 }
             }
 
-            return base.VisitTypeDeclaration(typeDeclaration, data);
+            var result = base.VisitTypeDeclaration(typeDeclaration, data);
+            currentDependencyRelation = previous;
+            return result;
+        }
+
+        public override object VisitConstructorDeclaration(ConstructorDeclaration constructorDeclaration, object data)
+        {
+            currentDependencyRelation.RecordConstructor(constructorDeclaration);
+            return base.VisitConstructorDeclaration(constructorDeclaration, data);
         }
 
         TypeReference FindDependencyDeclaration(TypeDeclaration typeDeclaration)
